@@ -1,0 +1,5 @@
+__pycache__
+venv
+.flaskenv
+app.db
+cs50x-final-project.mp4

@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+{% if current_user.is_authenticated %}
+<h1>{{ heading }}</h1>
+<div style="text-align:left">
+    <a href="{{ url_for('add_post', next=request.path) }}" type="button" class="btn btn-primary">+ New Message</a>
+</div>
+{% endif %}
+{% for post in posts %}
+    {% include '_display_post.html' %}
+{% else %}
+<p>No post yet.</p>
+{% endfor %}
+{% if token %}
+<script type="text/javascript">
+    let token = "{{ token }}";
+</script>
+{% endif %}
+<script type="text/javascript" src="{{url_for('static', filename='main.js') }}"></script>
+{% endblock %}

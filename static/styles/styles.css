@@ -1,0 +1,39 @@
+html {
+    font-size: 18px;
+}
+main {
+    text-align: center;
+}
+h1 {
+    margin-bottom: 1rem;
+}
+a:hover {
+    text-decoration: none;
+}
+.card {
+    max-width: 54rem;
+}
+/* If the screen size is 600px wide or less, 
+   hide the edit and delete words */
+@media (max-width: 600px) {
+    .hide {
+        display: none;
+    }
+}
+.card-body {
+    text-align: left;
+}
+.card a {
+    display: inline-flex;
+    vertical-align: middle;
+}
+form {
+    display: inline-block;
+}
+.form-control {
+    /* override Bootstrap's 100% width for form controls 
+       so that the html size attribute value is applied */
+    width: auto;
+    /* center form controls horizontally */
+    display: inline-block;
+}
