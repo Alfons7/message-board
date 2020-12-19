@@ -1,17 +1,16 @@
 import os
-import secrets
-from flask import Flask, request, render_template, flash, redirect, url_for, jsonify, session
+from flask import Flask, request, render_template, flash, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, exc
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from helpers import time_ago, not_login_required, get_next_page
-from dotenv import load_dotenv
-load_dotenv('.flaskenv')
 
 app = Flask(__name__)
 
-# load secret key from the environment
+#
+# configuration
+# 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 if app.config['SECRET_KEY'] is None:
     raise ValueError('Secret Key Missing')
@@ -21,9 +20,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     'DATABASE_URL', f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # TODO: set SQLALCHEMY_ECHO to False when done with development
-app.config['SQLALCHEMY_ECHO'] = True
+# app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
-# Ensure FOREIGN KEY constraints are enforced by sqlite3 
+# Ensure FOREIGN KEY constraints are enforced when using sqlite 
 # https://gist.github.com/asyd/a7aadcf07a66035ac15d284aef10d458
 if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
     def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
@@ -43,9 +42,8 @@ from forms import LoginForm, RegisterForm, PostForm, ConfirmDelete
 def make_shell_context():
     return {'db': db, 'User': User, 'Post': Post}
 
-
 #
-# Custom error handlers
+# Custom error handler
 #
 
 @app.errorhandler(404)
@@ -95,48 +93,25 @@ def register():
 # view functions to display and handle messages
 #
 
-# helper functions to get a token and check it when dealing with
-# ajax requests
-# TODO: assess interest of using the token when ajax views already
-# use @loguin_required
-def get_token():
-    """
-    Return random token after storing it in the current user's session.
-    Assumes caller function checked that the curernt user is logged in.
-    """
-    token = session.get('token')
-    if token is None:
-        token = session['token'] = secrets.token_urlsafe(20)
-    return token
-
-def check_token(token):
-    """
-    Return True if the given token corresponds to the one
-    stored in the session, False otherwise.
-    Assumes caller function checked that the curernt user is logged in.
-    """
-    return session.get('token') == token
-
 @app.route('/')
 def index():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
-    token = get_token() if current_user.is_authenticated else None
     return render_template('index.html', 
-        title="MessageBoard", heading="All messages", posts=posts, token=token)
+        title="MessageBoard", heading="All messages", posts=posts)
 
 @app.route('/favorites')
 @login_required
 def favorites():
     posts = current_user.favorites
     return render_template('index.html', 
-        title="My favorites", heading="My favorite messages", posts=posts, token=get_token())
+        title="My favorites", heading="My favorite messages", posts=posts)
 
 @app.route('/my_posts')
 @login_required
 def my_posts():
     posts = current_user.posts
     return render_template('index.html', 
-        title="My messages", heading="My messages", posts=posts, token=get_token())
+        title="My messages", heading="My messages", posts=posts)
 
 
 @app.route('/add_post', methods=['GET', 'POST'])
@@ -202,10 +177,6 @@ def delete(id):
 @app.route('/fav', methods=["POST"])
 @login_required
 def fav():
-    token = request.form.get('token')
-    print(f"{token=}")
-    if not check_token(token):
-        return jsonify(success=False)
     post_id = request.form.get('post_id')
     post = Post.query.filter_by(id=post_id).first()
     if post is None:
@@ -222,9 +193,6 @@ def fav():
 @app.route('/unfav', methods=["POST"])
 @login_required
 def unfav():
-    token = request.form.get('token')
-    if not check_token(token):
-        return jsonify(success=False)
     post_id = request.form.get('post_id')
     post = Post.query.filter_by(id=post_id).first()
     if post is None:

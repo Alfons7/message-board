@@ -1,5 +1,5 @@
 __pycache__
 venv
-.flaskenv
+.env
 app.db
 cs50x-final-project.mp4

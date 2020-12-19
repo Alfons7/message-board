@@ -2,7 +2,6 @@ function fav_change(action, post_id) {
     const url = `${window.location.origin}/${action}`;
     const formData = new FormData();
     formData.append('post_id', post_id);
-    formData.append('token', token);
     const request = new Request(url);
     fetch(request, {
         method: 'POST', 

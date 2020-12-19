@@ -13,9 +13,6 @@
 <p>No post yet.</p>
 {% endfor %}
 {% if token %}
-<script type="text/javascript">
-    let token = "{{ token }}";
-</script>
 {% endif %}
 <script type="text/javascript" src="{{url_for('static', filename='main.js') }}"></script>
 {% endblock %}
