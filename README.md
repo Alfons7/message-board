@@ -1,6 +1,4 @@
-# message board application using Flask
-
-This is a final project for Harvard's course [CS50x](https://cs50.harvard.edu/x/2022/).
+# small message board application using Flask
 
 ![Screenshot](./static/screen.png)
 
