@@ -12,8 +12,8 @@ The application provides functionality to:
 4. edit and delete a user's own messages
 5. mark/unmark messages as favorites
 
-Users must log in to be able to add, edit or delete 
-messages, and to mark/unmark messages as favorites.
+Users must log in first in order to be able to add, edit or delete messages, 
+and to mark/unmark messages as favorites.
 
 A user can only edit and delete their own messages.
 
@@ -27,7 +27,7 @@ A user can only edit and delete their own messages.
     `pip install -r requirements.txt`
 + Create a `.env` file and store your SECRET_KEY inside:  
     `SECRET_KEY=my-long-secret-key`
-+ Create the database to store messages 
++ Create the database to store messages  
     `flask db upgrade`
 + Launch the development server  
     `flask run`
